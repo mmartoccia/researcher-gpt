@@ -74,7 +74,7 @@ def scrape_website(objective: str, url: str):
         text = soup.get_text()
         print("CONTENTTTTTT:", text)
 
-        if len(text) > 10000:
+        if len(text) > 20000:
             output = summary(objective, text)
             return output
         else:
@@ -84,10 +84,10 @@ def scrape_website(objective: str, url: str):
 
 
 def summary(objective, content):
-    llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo-16k-0613")
+    llm = ChatOpenAI(temperature=0, model="gpt-4-1106-preview")
 
     text_splitter = RecursiveCharacterTextSplitter(
-        separators=["\n\n", "\n"], chunk_size=10000, chunk_overlap=500)
+        separators=["\n\n", "\n"], chunk_size=20000, chunk_overlap=1000)
     docs = text_splitter.create_documents([content])
     map_prompt = """
     Write a summary of the following text for {objective}:
@@ -157,9 +157,9 @@ agent_kwargs = {
     "system_message": system_message,
 }
 
-llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo-16k-0613")
+llm = ChatOpenAI(temperature=0, model="gpt-4-1106-preview")
 memory = ConversationSummaryBufferMemory(
-    memory_key="memory", return_messages=True, llm=llm, max_token_limit=1000)
+    memory_key="memory", return_messages=True, llm=llm, max_token_limit=4000)
 
 agent = initialize_agent(
     tools,
